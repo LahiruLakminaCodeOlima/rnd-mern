@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ChildUpdating from '../custom_component/ChildUpdating'
+import ChildUpdatingTwo from '../custom_component/ChildUpdatingTwo'
 import ChildUnmount from '../custom_component/ChildUnmount';
 
 export class UpdatingScreen extends Component {
@@ -28,6 +29,7 @@ export class UpdatingScreen extends Component {
           <button onClick={()=>{this.setState({unMount: !this.state.unMount})}}>{this.state.unMount ? "Hide Products": "Show Products"}</button>
         </div>
         {this.state.unMount ? <ChildUnmount/> : ''}
+        <ChildUpdatingTwo/>
       </>
     )
   }
