@@ -2,21 +2,22 @@ var express = require('express');
 var express = require('express');
 var router = express.Router();
 const { DUMMY_PRODUCT_LIST } = require('../dummy/dummy-products');
+var Products = require('../models/products')
 
-/* List Products */
-router.get('/', function(req, res, next) {
-
-    const products = DUMMY_PRODUCT_LIST
-    return res.status(200).json(products)
+router.get('/', async (req, res, next) => {
+    try{
+        const products = await Products.find({})
+        return res.status(200).json(products)
+    }
+    catch(err){
+        res.status(500).json({message: err.message})
+    }
 });
 
-router.get('/:id', function(req, res, next) {
-    // try{console.log("runOut")}catch(err){return res.status(500, err).json()}
-    console.log("runOut")
+router.get('/:id', async (req, res, next) =>{
     try{
-        console.log("runIn")
         const id = req.params.id;
-        const product = DUMMY_PRODUCT_LIST.find((item) => item._id === id)
+        const product = await Products.findOne({_id : id})
         if(product){
             return res.status(200).json(product)
         }else{
@@ -26,15 +27,16 @@ router.get('/:id', function(req, res, next) {
         return res.status(500, err).json()
     }
 });
-router.post('/', function(req, res, next) {
+router.post('/', async (req, res, next) => {
     try{
-        const id = Math.random();
-        const name = req.query.name;
-        const description = req.query.description;
-        const price = req.query.price;
-        const timestamp = req.query.timestamp;
-
-        const product = DUMMY_PRODUCT_LIST.push({"name":name, "description":description, "price":price, "timestamp":timestamp, "_id":id});
+        const id = Math.random().toString();
+        const name = req.body.name;
+        const description = req.body.description;
+        const price = req.body.price;
+        const timestamp = req.body.timestamp;
+        console.log(id, name, description, price, timestamp)
+        const product = new Products({ "_id":id, "name":name, "description":description, "price":price, "timestamp":timestamp});
+        await product.save()
         if(product){
             return res.status(200).json(product)
         }
@@ -45,25 +47,18 @@ router.post('/', function(req, res, next) {
         return res.status(500, err).json()
     }
 });
-router.put('/:id', function(req, res, next) {
-    console.log("run")
+router.put('/:id', async(req, res, next) => {
+    
     try{
         const id = req.params.id;
-        const name = req.query.name;
-        const description = req.query.description;
-        const price = req.query.price;
-        const timestamp = req.query.timestamp;
-        const product = DUMMY_PRODUCT_LIST.map(index=>{
-            if(index._id === id){
-                {
-                    index.name = name,
-                    index.description = description,
-                    index.price = price,
-                    index.timestamp = timestamp
-                }
-            }
-        });
-
+        const name = req.body.name;
+        const description = req.body.description;
+        const price = req.body.price;
+        const timestamp = req.body.timestamp;
+        //findOneAndUpdate
+        //findByIdAndUpdate
+        //updateOne
+        const product = await Products.updateOne({_id:id},{name : name, description : description, price : price, timestamp : timestamp});
         if(product){
             return res.status(200).json(product)
         }
@@ -75,20 +70,10 @@ router.put('/:id', function(req, res, next) {
     }
 })
 
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id', async (req, res, next) => {
     try{
         const id = req.params.id;
-        let count=0;
-        const product = DUMMY_PRODUCT_LIST.map((index, item) =>{
-            if(index._id === id)
-            {
-                console.log(count," === ",id);
-                return(
-                    DUMMY_PRODUCT_LIST.splice(count, 1)
-                )
-            }
-            count = count+1
-        })
+        const product = await Products.deleteOne({_id: id});
         if(product){
             return res.status(200).json(product)
         }

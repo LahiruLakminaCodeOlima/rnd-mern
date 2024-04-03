@@ -3,6 +3,14 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
+
+main().catch(err => console.log(err));
+
+async function main() {
+  await mongoose.connect(process.env.MONGODB_URL);
+}
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
