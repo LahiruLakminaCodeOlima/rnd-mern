@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { MyThemeContext} from '../Context/ThemeContext'
+import RndClaCom from './RndClaCom'
 
 export default class Scenery extends Component {
     
@@ -8,10 +9,7 @@ export default class Scenery extends Component {
     let theme = this.context
     return (
       <div style={{backgroundColor: theme.background, color: theme.foreground}}>
-        <h1>Name</h1>
-        <h3>ID</h3>
-        <p>Address</p>
-        <p>Description</p>
+        <RndClaCom/>
       </div>
     )
   }
