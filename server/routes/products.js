@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var { v4: uuidv4 } = require('uuid');
 var Products = require('../models/products')
 
 router.get('/', async (req, res, next) => {
@@ -30,13 +31,14 @@ router.post('/', async (req, res, next) => {
     try{
         const {name, description, price} =req.body;
         const timestamp =new Date().toUTCString();
+        const id = uuidv4();
         if(name)
         {
             if(description)
             {
                 if(price && !isNaN(price))
                 {
-                    const product = new Products({"name":name, "description":description, "price":price, "timestamp":timestamp});
+                    const product = new Products({"_id": id, "name":name, "description":description, "price":price, "timestamp":timestamp});
                     await product.save()
                     if(product)
                     {

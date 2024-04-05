@@ -1,16 +1,40 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { MyThemeContext } from '../Context/ThemeContext'
 
-function Dashboard() {
+function Dashboard(props) {
+  useEffect(()=>{
+    //console.log(show)
+  })
+  const [show, setShow] = useState(true);
+  const [addData, setAddData] = useState(false);
   const theme = useContext(MyThemeContext)
-  console.log()
+  function showAllHandler(){
+    
+    setShow(!show)
+    props.action(show);
+  }
+  function addDataHandler(){
+    setAddData(!addData)
+    props.addFrom(addData);
+  }
   return (
     <div>
       <div className="dashboardContainer" style={{backgroundColor:theme.background,color:theme.foreground}}>
         <input type="text" placeholder="search" className="filter-search" style={{backgroundColor:theme.btnBackground,color:theme.background}}/>
-        <button className="filter-btn"style={{backgroundColor:theme.btnBackground,color:theme.background}}>Show All</button>
-        <button className="filter-btn"style={{backgroundColor:theme.btnBackground,color:theme.background}}>Show User Name</button>
-        <button className="filter-btn"style={{backgroundColor:theme.btnBackground,color:theme.background}}>Show User Description</button>
+        <button
+          className="filter-btn"
+          style={{backgroundColor:theme.btnBackground,color:theme.background}} 
+          onClick={()=>showAllHandler()}
+        >
+          {show ? "Show All" : "Hide All"}
+        </button>
+        <button 
+          className="filter-btn"
+          style={{backgroundColor:theme.btnBackground,color:theme.background}}
+          onClick={()=>addDataHandler()}
+        >
+          {addData ? "Add Dada" : "Close Forme"}
+        </button>
       </div>
     </div>
   )

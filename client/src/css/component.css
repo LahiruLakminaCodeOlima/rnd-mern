@@ -29,3 +29,44 @@
 .filter-btn:active{
     transform: scale(0.9)
 }
+/*Add data form*/
+
+.form-container{
+    display: flex;
+    justify-content:center;
+    height: 100vh;
+    width: 80vw;
+    position: relative;
+}
+.form-box{
+    margin:20px;
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    width:300px;
+    top:20%;
+    position: absolute;
+}
+.form-item-label{
+    font-family: calibri;
+    font-weight: bold;
+    font-size: 20px;
+}
+.form-item-box{
+    display: flex;
+    flex-direction:column;
+    margin:10px;
+    width:300px
+}
+.form--input-item{
+    padding:10px 5px;
+    border-radius:10px;
+    outline:none;
+    border:none;
+}
+.btn{
+    width:150px;
+    padding: 10px;
+    border-radius:10px
+
+}
