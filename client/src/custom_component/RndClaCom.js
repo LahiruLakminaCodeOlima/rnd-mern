@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {fetchProducts, deleteProductsById, putProducts} from '../Services/ApiService';
 import Loading from './Loading';
 import { MyThemeContext } from '../Context/ThemeContext'
-
+import Popup from 'reactjs-popup';
 export class RndClaCom extends Component {
     constructor(props) {
         super(props);
@@ -14,7 +14,6 @@ export class RndClaCom extends Component {
         }
         
     }
-    
 
     componentDidMount(){
         setTimeout(()=>{
@@ -27,7 +26,6 @@ export class RndClaCom extends Component {
                 
             })
             .catch((err) =>{
-                console.log("run",err);
                 this.setState({
                     isLoading: false 
                 })
@@ -43,7 +41,7 @@ export class RndClaCom extends Component {
         deleteProductsById(id)
         .then((res)=>{
             console.log(res)
-            window.location.reload()
+            //window.location.reload()
         })
         .catch((err)=>{
             console.log(err)
@@ -60,7 +58,7 @@ export class RndClaCom extends Component {
     const theme = this.context;
     return (
       <div style={{position: 'relative'}}>
-        <div style={{margin:"10px",display: "flex",flexWrap: "wrap",justifyContent:"center"}}>
+        <div style={{margin:"10px",display: "flex",flexWrap: "wrap",justifyContent:"center"}} htmlFor="item-box">
             {this.state.isLoading ? <Loading/>: this.state.products.map((data, index) => 
                 <div key={index} style={{width:"400px",margin: "10px",border: `1px solid ${theme.foreground}`, padding: "10px", borderRadius: "10px"}}>
                     <h1>{data.name}</h1>
@@ -68,7 +66,17 @@ export class RndClaCom extends Component {
                     <p>{data.timestamp}</p>
                     <p>{data.description}</p>
                     <button className="filter-btn"style={{backgroundColor:"green",color:"white", margin:"10px", padding:"10px",}} onClick={()=>{this.updateHandle(data._id,data.name,data.description,data.price,data.timestamp)}}>UPDATE</button>
-                    <button className="filter-btn"style={{backgroundColor:"red",color:"white", margin:"10px", padding:"10px"}} onClick={()=>{this.deleteHandle(data._id)}}>DELETE</button>
+                    <Popup 
+                        trigger={
+                            <button className="filter-btn" style={{backgroundColor:"red",color:"white", margin:"10px", padding:"10px"}} >DELETE</button>
+                        } 
+                        position="right center"
+                    >
+                        <div style={{width:"250px",backgroundColor:"yellow",borderRadius:"10px",display:"flex",flexDirection:"column", alignItems:"center"}}>
+                            <p style={{textAlign:"center", fontWeight:"bold",color:"black"}}>Are you sure you want to delete this?</p>
+                            <button  className="filter-btn"style={{backgroundColor:"red",color:"white", margin:"10px", padding:"10px"}} onClick={()=>{this.deleteHandle(data._id)}}>Delete</button>
+                        </div>
+                    </Popup>
                 </div>
             )}
         </div>
@@ -96,15 +104,15 @@ class RndClaUpdate extends Component{
         }
     }
     componentDidUpdate(nextProps, nextState){
-        console.log(nextProps.productsData[0], this.props.productsData[0])
-        if(nextProps.productsData[0] !== this.props.productsData[0])
-        {
-            return true;
-        }
-        return false;
+        // console.log(nextProps.productsData[0], this.props.productsData[0])
+        // if(nextProps.productsData[0] !== this.props.productsData[0])
+        // {
+        //     return true;
+        // }
+        // return false;
     }
     handleSubmit=()=>{
-        putProducts(this.props.productsData[0], this.state.name,this.state.description,this.state.price, this.state.date)
+        putProducts(this.props.productsData[0], this.state.name, this.state.description, this.state.price)
         .then((res)=>{
             console.log(res)
         })
@@ -146,15 +154,6 @@ class RndClaUpdate extends Component{
                                 onChange={(e)=>{this.setState({price: e.target.value})}}
                                 className='form--input-item'
                                 defaultValue={this.props.productsData[3]}
-                            />
-                        </div>
-                        <div className="form-item-box">
-                            <label className='form-item-label'>Date</label>
-                            <input 
-                                type="date"
-                                onChange={(e)=>{this.setState({date: e.target.value})}}
-                                className='form--input-item'
-                                defaultValue={this.props.productsData[4]}
                             />
                         </div>
                         <input type="submit" value="ADD PRODUCT" className="btn"/>

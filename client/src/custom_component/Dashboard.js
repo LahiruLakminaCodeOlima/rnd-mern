@@ -6,7 +6,7 @@ function Dashboard(props) {
     //console.log(show)
   })
   const [show, setShow] = useState(true);
-  const [addData, setAddData] = useState(false);
+  const [addData, setAddData] = useState(true);
   const theme = useContext(MyThemeContext)
   function showAllHandler(){
     

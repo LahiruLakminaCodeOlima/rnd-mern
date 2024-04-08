@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var { v4: uuidv4 } = require('uuid');
 var Products = require('../models/products')
+var { validateRequestPayload }= require('../util/validateRequestPayload')
+
 
 router.get('/', async (req, res, next) => {
     try{
@@ -27,101 +29,74 @@ router.get('/:id', async (req, res, next) =>{
     }
 });
 
+const validationConfigCreateObj =[
+    { key: "name", type: "string", isRequired: true },
+    { key: "price", type: "number", isRequired: true },
+    { key: "description", type: "string", isRequired: false }
+]
+
 router.post('/', async (req, res, next) => {
+    const {name, description, price}= req.body;
     try{
-        const {name, description, price} =req.body;
-        const timestamp =new Date().toUTCString();
+        const isError = validateRequestPayload(req.body, validationConfigCreateObj)
         const id = uuidv4();
-        if(name)
+
+        if(!isError.length)
         {
-            if(description)
-            {
-                if(price && !isNaN(price))
-                {
-                    const product = new Products({"_id": id, "name":name, "description":description, "price":price, "timestamp":timestamp});
-                    await product.save()
-                    if(product)
-                    {
-                        return res.status(200).json(product)
-                    }
-                    else
-                    {
-                        return res.status(400).json()
-                    }
-                }
-                else
-                {
-                    return res.status(400).json("Price is not defined or is not a number")
-                }
-            }
-            else
-            {
-                return res.status(400).json("Description is not defined")
-            }
+            const product = new Products({"_id": id, "name":name, "description":description, "price":price});
+            await product.save()
+            return res.status(200).json(product)
         }
-        elses
+        else
         {
-            return res.status(400).json("Name is not defined")
-        }        
+            return res.status(400).json(isError)
+        }
     }catch(err){
-        return res.status(500, err).json()
+        return res.status(500).json(err)
     }
 });
+
+const validationConfigUpdateObj =[
+    { key: "name", type: "string", isRequired: true },
+    { key: "price", type: "number", isRequired: true },
+    { key: "description", type: "string", isRequired: false }
+]
+
 router.put('/:id', async(req, res, next) => {
-    
     try{
-        const id = req.params.id;
-        const {name, description, price, timestamp} = req.body;
         //findOneAndUpdate
         //findByIdAndUpdate
         //updateOne
-        if(name)
+        const {name, description, price}= req.body;
+        const id = req.params.id;
+        const isError = validateRequestPayload(req.body, validationConfigUpdateObj)
+
+        if(!isError.length)
         {
-            if(description)
+            const findProduct = await Products.findOne({_id : id }).exec() 
+            if(findProduct)
             {
-                if(price && !isNaN(price))
-                {
-                    if(timestamp)
-                    {
-                        
-                        const product = await Products.updateOne({_id:id},{name : name, description : description, price : price, timestamp : timestamp});
-                        if(product)
-                        {
-                            return res.status(200).json(product)
-                        }
-                        else
-                        {
-                            return res.status(404).json()
-                        }
-                    }
-                    else
-                    {
-                        return res.status(400).json("Timestamp is not defined")
-                    }
-                }
-                else
-                {
-                    return res.status(400).json("Price is not defined or is not a number")
-                }
+            const product = await Products.updateOne({_id:id},{name : name, description : description, price : price});
+            return res.status(200).json(product)
             }
-            else
-            {
-                return res.status(400).json("Description is not defined")
+            else{
+                return res.status(404).json("You Looking Product Is Not Found")
             }
         }
-        elses
+        else
         {
-            return res.status(400).json("Name is not defined")
-        } 
+            return res.status(400).json(isError)
+        }
     }catch(err){
-        return res.status(500, err).json()
+        return res.status(500).json(err)
     }
 })
 
 router.delete('/:id', async (req, res, next) => {
     try{
         const id = req.params.id;
-        const product = await Products.deleteOne({_id: id});
+        const product = await Products.deleteOne({_id: id}).exec();
+        console.log(product)
         if(product){
             return res.status(200).json(product)
         }

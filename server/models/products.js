@@ -5,8 +5,7 @@ const schema = new mongoose.Schema({
     name: String,
     description: String,
     price: Number,
-    timestamp: String,
-});
+},{ timestamps: true });
 
 const Products = mongoose.model('Products', schema);
 
