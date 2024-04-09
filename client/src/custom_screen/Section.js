@@ -16,9 +16,9 @@ export default function Section() {
     <MyThemeContext.Provider value={theme}>
       <div className="sectionContainer">
         <button onClick={handleTheme} className='btn-theme'style={{backgroundColor:theme.background,color:theme.foreground}}>{theme.type}</button>
-        <div className="dashboard-box">
+        {/* <div className="dashboard-box">
           <Dashboard controlTheme={setTheme} action={setAction} addFrom={setAddAction}/>  
-        </div>
+        </div> */}
         <div className="scenery-box">
           <Scenery action={action} addFrom={addAction} />
         </div>

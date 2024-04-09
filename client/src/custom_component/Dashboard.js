@@ -1,42 +1,41 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect} from 'react'
 import { MyThemeContext } from '../Context/ThemeContext'
+import { Link } from 'react-router-dom';
 
 function Dashboard(props) {
   useEffect(()=>{
     //console.log(show)
   })
-  const [show, setShow] = useState(true);
-  const [addData, setAddData] = useState(true);
+ 
   const theme = useContext(MyThemeContext)
-  function showAllHandler(){
-    
-    setShow(!show)
-    props.action(show);
-  }
-  function addDataHandler(){
-    setAddData(!addData)
-    props.addFrom(addData);
-  }
+  
   return (
-    <div>
+    <>
       <div className="dashboardContainer" style={{backgroundColor:theme.background,color:theme.foreground}}>
         <input type="text" placeholder="search" className="filter-search" style={{backgroundColor:theme.btnBackground,color:theme.background}}/>
-        <button
+        <Link
+          to ="/"
           className="filter-btn"
-          style={{backgroundColor:theme.btnBackground,color:theme.background}} 
-          onClick={()=>showAllHandler()}
+          style={{backgroundColor:theme.btnBackground,color:theme.background,textDecoration:"none",textAlign:"center",}}
         >
-          {show ? "Show All" : "Hide All"}
-        </button>
-        <button 
+          Show All Products 
+        </Link>
+        <Link
+          to ="/products"
           className="filter-btn"
-          style={{backgroundColor:theme.btnBackground,color:theme.background}}
-          onClick={()=>addDataHandler()}
+          style={{backgroundColor:theme.btnBackground,color:theme.background,textDecoration:"none",textAlign:"center",}}
         >
-          {addData ? "Add Dada" : "Close Forme"}
-        </button>
+          Show Products Page Wise 
+        </Link>
+        <Link 
+          to="/products/add" 
+          className="filter-btn"
+          style={{backgroundColor:theme.btnBackground,color:theme.background,textDecoration:"none",textAlign:"center",}}
+        >
+          Add New Product
+        </Link>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -29,6 +29,27 @@ router.get('/:id', async (req, res, next) =>{
     }
 });
 
+router.post("/get-by-page", async (req, res, next) =>{
+    try{
+        const page = req.query.page;
+        const limit = 3;
+        const count = await Products.find({}).exec();
+        var totalPage = (count.length/3)
+        const products = await Products.find({}).skip((page - 1) * limit).limit(limit).exec();
+        
+        if(products){
+            return res.status(200).json([{products:products}, {totalPage:totalPage}])
+        }
+        else{
+            return res.status(404).json()
+        }
+    }
+    catch(err)
+    {
+        return res.status(500).json(err);
+    }
+});
+
 const validationConfigCreateObj =[
     { key: "name", type: "string", isRequired: true },
     { key: "price", type: "number", isRequired: true },
